@@ -34,14 +34,15 @@ namespace JsonReader
             var conn = QueryExecuter.OpenConnection(connectionString);
 
             foreach (var x in Source.getItems().
-                    AsParallel().
-                    WithMergeOptions(ParallelMergeOptions.NotBuffered).
-                    WithExecutionMode(ParallelExecutionMode.ForceParallelism).
-                    WithDegreeOfParallelism(2).Select(x => {
-                        System.Console.WriteLine("Executing: " + x.Query);
-                        return new {Job = x, result = QueryExecuter.Execute((cmd) => new System.Data.SqlClient.SqlCommand(cmd, conn), x.Query)};
+					AsParallel().
+					WithMergeOptions(ParallelMergeOptions.NotBuffered).
+					WithExecutionMode(ParallelExecutionMode.ForceParallelism).
+					WithDegreeOfParallelism(2).Select(x => {
+						System.Console.WriteLine("Executing: " + x.Query);
+                        return new {Job = x, Result = QueryExecuter.Execute((cmd) => new System.Data.SqlClient.SqlCommand(cmd, conn), x.Query)};
                     })) {
-                System.Console.WriteLine("Done with this: " + x.Job.FilePath + "  " + x.result.Substring(0, 60));
+				System.Console.WriteLine("Done with this: " + x.Job.FilePath + "  " + x.Result.Substring(0, 60));
+				System.IO.File.WriteAllText(System.IO.Path.Combine("data", x.Job.FilePath), x.Result);
             }
 
             Console.WriteLine("Hello World!");
