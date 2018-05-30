@@ -31,7 +31,7 @@ namespace sqlserver_json_to_files
                         System.Threading.Thread.Sleep(2000);
                         return x.Query;
                     })) {
-                System.Console.WriteLine("Done wiht this: " + x);
+                System.Console.WriteLine("Done with this: " + x);
             }
 
             Console.WriteLine("Hello World!");
