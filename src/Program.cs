@@ -13,8 +13,8 @@ namespace JsonReader
 
     static class Source {
         public static IEnumerable<Job> getItems() {
-            yield return new Job {FilePath = "hei.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=@id FOR JSON AUTO", Params = new List<System.Data.SqlClient.SqlParameter> {new System.Data.SqlClient.SqlParameter {Value = 4015, SqlDbType = System.Data.SqlDbType.Int}}};
-            yield return new Job {FilePath = "hei2.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=@id FOR JSON AUTO", Params = new List<System.Data.SqlClient.SqlParameter> {new System.Data.SqlClient.SqlParameter {Value = 4010, SqlDbType = System.Data.SqlDbType.Int}}};
+            yield return new Job {FilePath = "hei.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=@id FOR JSON AUTO", Params = new List<System.Data.SqlClient.SqlParameter> {new System.Data.SqlClient.SqlParameter("@id", System.Data.SqlDbType.Int) {Value = 4019}}};
+            yield return new Job {FilePath = "hei2.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=@id FOR JSON AUTO", Params = new List<System.Data.SqlClient.SqlParameter> {new System.Data.SqlClient.SqlParameter("@id", System.Data.SqlDbType.Int) {Value = 4019}}};
             yield return new Job {FilePath = "hei3.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4011 FOR JSON AUTO"};
             yield return new Job {FilePath = "hei4.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4012 FOR JSON AUTO"};
         }
