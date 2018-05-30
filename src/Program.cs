@@ -8,12 +8,13 @@ namespace JsonReader
     public class Job {
         public string Query;
         public string FilePath;
+        public IList<System.Data.SqlClient.SqlParameter> Params = new List<System.Data.SqlClient.SqlParameter>();
     }
 
     static class Source {
         public static IEnumerable<Job> getItems() {
-            yield return new Job {FilePath = "hei.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4019 FOR JSON AUTO"};
-            yield return new Job {FilePath = "hei2.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4010 FOR JSON AUTO"};
+            yield return new Job {FilePath = "hei.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=@id FOR JSON AUTO", Params = new List<System.Data.SqlClient.SqlParameter> {new System.Data.SqlClient.SqlParameter {Value = 4015, SqlDbType = System.Data.SqlDbType.Int}}};
+            yield return new Job {FilePath = "hei2.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=@id FOR JSON AUTO", Params = new List<System.Data.SqlClient.SqlParameter> {new System.Data.SqlClient.SqlParameter {Value = 4010, SqlDbType = System.Data.SqlDbType.Int}}};
             yield return new Job {FilePath = "hei3.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4011 FOR JSON AUTO"};
             yield return new Job {FilePath = "hei4.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4012 FOR JSON AUTO"};
         }
@@ -39,7 +40,7 @@ namespace JsonReader
 					WithExecutionMode(ParallelExecutionMode.ForceParallelism).
 					WithDegreeOfParallelism(2).Select(x => {
 						System.Console.WriteLine("Executing: " + x.Query);
-                        return new {Job = x, Result = QueryExecuter.Execute((cmd) => new System.Data.SqlClient.SqlCommand(cmd, conn), x.Query)};
+                        return new {Job = x, Result = QueryExecuter.Execute((cmd) => new System.Data.SqlClient.SqlCommand(cmd, conn), x.Query, x.Params)};
                     })) {
 				System.Console.WriteLine("Done with this: " + x.Job.FilePath + "  " + x.Result.Substring(0, 60));
 				System.IO.File.WriteAllText(System.IO.Path.Combine("data", x.Job.FilePath), x.Result);

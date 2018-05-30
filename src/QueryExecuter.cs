@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 
@@ -13,9 +14,11 @@ namespace JsonReader
             return conn;
 		}
 
-		public static string Execute(System.Func<string, SqlCommand> commandCreator, string queryWithForJson)
+		public static string Execute(System.Func<string, SqlCommand> commandCreator, string queryWithForJson, IList<SqlParameter> sqlParams)
 		{
 			var cmd = commandCreator(queryWithForJson);
+            foreach (var p in sqlParams)
+                cmd.Parameters.Add(p);
 			var jsonResult = new StringBuilder();
 			var reader = cmd.ExecuteReader();
 			if (!reader.HasRows)
