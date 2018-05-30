@@ -32,7 +32,7 @@ namespace JsonReader
             var connectionString = configuration.GetConnectionString("Main");
 
             var conn = QueryExecuter.OpenConnection(connectionString);
-            
+
             foreach (var x in Source.getItems().
                     AsParallel().
                     WithMergeOptions(ParallelMergeOptions.NotBuffered).
@@ -41,7 +41,7 @@ namespace JsonReader
                         System.Console.WriteLine("Executing: " + x.Query);
                         return new {Job = x, result = QueryExecuter.Execute((cmd) => new System.Data.SqlClient.SqlCommand(cmd, conn), x.Query)};
                     })) {
-                System.Console.WriteLine("Done with this: " + x.Job.FilePath + "  " + x.result.Substring(0, 20));
+                System.Console.WriteLine("Done with this: " + x.Job.FilePath + "  " + x.result.Substring(0, 60));
             }
 
             Console.WriteLine("Hello World!");
