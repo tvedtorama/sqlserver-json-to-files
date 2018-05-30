@@ -1,4 +1,4 @@
-SELECT TOP 10 
+SELECT
 		'IMPORT_EVENT_BLOCK' as type,
 		'EVENT' as scenarioId,
 		JSON_QUERY((SELECT

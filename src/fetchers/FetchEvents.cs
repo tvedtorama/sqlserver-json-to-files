@@ -17,7 +17,7 @@ namespace JsonReader.Fetchers
 		public static IEnumerable<Job> ProduceEvents(IConfigurationRoot root, System.Func<string, string> loadFile) {
 			var fetchUsageEvents = loadFile("FetchUsageEvents.sql");
 
-			var dates = new List<System.DateTime> {new System.DateTime(2018, 01, 15), new System.DateTime(2018, 01, 20), new System.DateTime(2018, 01, 25)};
+			var dates = new List<System.DateTime> {new System.DateTime(2018, 01, 15), new System.DateTime(2018, 01, 17), new System.DateTime(2018, 01, 19)};
 			
 			var intervals = dates.Aggregate(new List<Interval>(), (x, y) => {
 					if (x.Count > 0)
@@ -26,10 +26,10 @@ namespace JsonReader.Fetchers
 					return x;
 				}).SkipLast(1);
 			
-			foreach (var interval in intervals.Select((x, i) => new {x, i})) {
-				yield return new Job {Query = fetchUsageEvents, FilePath = $"UsageEvents_{interval.i}.json", Params = new List<SqlParameter> {
-						new SqlParameter("@startDate", System.Data.SqlDbType.Date) {Value = interval.x.startTime},
-						new SqlParameter("@endDate", System.Data.SqlDbType.Date) {Value = interval.x.endTime}
+			foreach (var interval in intervals) {
+				yield return new Job {Query = fetchUsageEvents, FilePath = $"UsageEvents_{interval.startTime.ToString("yyyy-MM-dd")}.json", Params = new List<SqlParameter> {
+						new SqlParameter("@startDate", System.Data.SqlDbType.Date) {Value = interval.startTime},
+						new SqlParameter("@endDate", System.Data.SqlDbType.Date) {Value = interval.endTime}
 					}};
 			}
 		}
