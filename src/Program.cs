@@ -27,7 +27,7 @@ namespace JsonReader
             var conn = QueryExecuter.OpenConnection(connectionString);
             var queries = new List<IEnumerable<Job>>{Source.getItems(), Fetchers.FetchEvents.ProduceEvents(configuration, f => System.IO.File.ReadAllText(f))}.SelectMany(x => x);
 
-            foreach (var x in Source.getItems().
+            foreach (var x in queries.
 					AsParallel().
 					WithMergeOptions(ParallelMergeOptions.NotBuffered).
 					WithExecutionMode(ParallelExecutionMode.ForceParallelism).
