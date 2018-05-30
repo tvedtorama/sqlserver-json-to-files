@@ -12,10 +12,10 @@ namespace JsonReader
 
     static class Source {
         public static IEnumerable<Job> getItems() {
-            yield return new Job {FilePath = "data/hei.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4019 FOR JSON AUTO"};
-            yield return new Job {FilePath = "data/hei2.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4010 FOR JSON AUTO"};
-            yield return new Job {FilePath = "data/hei3.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4011 FOR JSON AUTO"};
-            yield return new Job {FilePath = "data/hei4.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4012 FOR JSON AUTO"};
+            yield return new Job {FilePath = "hei.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4019 FOR JSON AUTO"};
+            yield return new Job {FilePath = "hei2.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4010 FOR JSON AUTO"};
+            yield return new Job {FilePath = "hei3.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4011 FOR JSON AUTO"};
+            yield return new Job {FilePath = "hei4.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4012 FOR JSON AUTO"};
         }
     }
 
