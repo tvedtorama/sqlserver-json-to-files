@@ -14,10 +14,19 @@ namespace JsonReader.Fetchers
 			public System.DateTime endTime;
 		}
 
-		public static IEnumerable<Job> ProduceEvents(IConfigurationRoot root, System.Func<string, string> loadFile) {
+		public class FetchEventsConfig {
+			public System.DateTime eventStartDate {get; set;}
+			public int eventIntervalHours {get; set;}
+		}
+
+		public static IEnumerable<Job> ProduceEvents(FetchEventsConfig config, System.Func<string, string> loadFile, System.DateTime endDateInput) {
 			var fetchUsageEvents = loadFile("FetchUsageEvents.sql");
 
-			var dates = new List<System.DateTime> {new System.DateTime(2018, 01, 15), new System.DateTime(2018, 01, 17), new System.DateTime(2018, 01, 19)};
+			var (startDate, intervalHours) = (config.eventStartDate.Date, config.eventIntervalHours);
+
+			var intervalCount = (int)System.Math.Ceiling((endDateInput - startDate).TotalHours / (double)intervalHours);
+
+			var dates = System.Linq.Enumerable.Range(0, intervalCount).Select(i => startDate + System.TimeSpan.FromHours(i * intervalHours)); // new List<System.DateTime> {new System.DateTime(2018, 01, 15), new System.DateTime(2018, 01, 17), new System.DateTime(2018, 01, 19)};
 			
 			var intervals = dates.Aggregate(new List<Interval>(), (x, y) => {
 					if (x.Count > 0)

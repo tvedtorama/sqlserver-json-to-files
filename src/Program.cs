@@ -22,10 +22,14 @@ namespace JsonReader
 
             var configuration = builder.Build();
 
+            var fetcherConfig = configuration.GetSection("eventFetcher").Get<Fetchers.FetchEvents.FetchEventsConfig>();
             var connectionString = configuration.GetConnectionString("Main");
 
             var conn = QueryExecuter.OpenConnection(connectionString);
-            var queries = new List<IEnumerable<Job>>{Source.getItems(), Fetchers.FetchEvents.ProduceEvents(configuration, f => System.IO.File.ReadAllText(f))}.SelectMany(x => x);
+            var queries = new List<IEnumerable<Job>>{
+                    Source.getItems(),
+                    Fetchers.FetchEvents.ProduceEvents(fetcherConfig, f => System.IO.File.ReadAllText(f), DateTime.Now.Date)
+                }.SelectMany(x => x);
 
             foreach (var x in queries.
 					AsParallel().
