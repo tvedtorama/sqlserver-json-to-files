@@ -5,13 +5,6 @@ using Microsoft.Extensions.Configuration;
 
 namespace JsonReader
 {
-
-    static class Source {
-        public static IEnumerable<Job> getItems() {
-            yield return new Job {FilePath = "hei4.json", Query = "select * from KundeEnhetTjeneste where IDKundeEnhet=4012 FOR JSON AUTO"};
-        }
-    }
-
     class Program
     {
         static void Main(string[] args)
@@ -26,9 +19,10 @@ namespace JsonReader
             var connectionString = configuration.GetConnectionString("Main");
 
             var conn = QueryExecuter.OpenConnection(connectionString);
+            System.Func<string, string> readFile = f => System.IO.File.ReadAllText(f);
             var queries = new List<IEnumerable<Job>>{
-                    Source.getItems(),
-                    Fetchers.FetchEvents.ProduceEvents(fetcherConfig, f => System.IO.File.ReadAllText(f), DateTime.Now.Date)
+                    Fetchers.FetchCustomers.ProduceCustomers(readFile),
+                    Fetchers.FetchEvents.ProduceEvents(fetcherConfig, readFile, DateTime.Now.Date),
                 }.SelectMany(x => x);
 
             foreach (var x in queries.

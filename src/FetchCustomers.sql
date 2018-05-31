@@ -33,7 +33,6 @@ CustType.KortNavn AS "customerType",
 JSON_QUERY(
 	(SELECT 
 		CAST(Chip.serienummer as nvarchar(200)) as id, 
-		CASE CustCard.Sperret WHEN 1 THEN 'DISABLED' ELSE NULL END as 'status' 
 		FROM KundeBrikker CustCard 
 		INNER JOIN Brikker Chip ON Chip.IDBrikke = CustCard.IDBrikke 
 		WHERE Cust.IDKundeEnhet = CustCard.IDKundeEnhet AND CustCard.Slettet <> 1 FOR JSON PATH)
