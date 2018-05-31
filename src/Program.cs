@@ -39,7 +39,7 @@ namespace JsonReader
 						System.Console.WriteLine("Executing: " + x.FilePath);
                         return new {Job = x, Result = QueryExecuter.Execute((cmd) => new System.Data.SqlClient.SqlCommand(cmd, conn), x.Query, x.Params)};
                     })) {
-				System.Console.WriteLine("Done with this: " + x.Job.FilePath + "  " + x.Result.Substring(0, 60));
+				System.Console.WriteLine("Done with this: " + x.Job.FilePath + "  " + x.Result.Substring(0, System.Math.Min(x.Result.Length, 60)));
 				System.IO.File.WriteAllText(System.IO.Path.Combine("data", x.Job.FilePath), x.Result);
             }
 
