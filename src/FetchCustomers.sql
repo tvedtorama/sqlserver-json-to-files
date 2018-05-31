@@ -32,7 +32,7 @@ JSON_QUERY((
 CustType.KortNavn AS "customerType",
 JSON_QUERY(
 	(SELECT 
-		CAST(Chip.serienummer as nvarchar(200)) as id, 
+		CAST(Chip.serienummer as nvarchar(200)) as id
 		FROM KundeBrikker CustCard 
 		INNER JOIN Brikker Chip ON Chip.IDBrikke = CustCard.IDBrikke 
 		WHERE Cust.IDKundeEnhet = CustCard.IDKundeEnhet AND CustCard.Slettet <> 1 FOR JSON PATH)
