@@ -19,4 +19,4 @@ SELECT
 				-- Note: When the IDTjeneste condition was added, to fix duplicate events among services, the query slowed down considerably
 				WHERE CONVERT(date, K.HendelseTidspunkt) = CONVERT(date, K0.HendelseTidspunkt) AND K.IDTjeneste = k0.IDTjeneste FOR JSON PATH)) AS "eventList"
 			FOR JSON PATH, WITHOUT_ARRAY_WRAPPER)) AS "payload"
-	FROM KundeHendelser AS K0  WHERE K0.HendelseTidspunkt >= @startDate AND K0.HendelseTidspunkt < @endDate GROUP BY CONVERT(date, K0.HendelseTidspunkt), IDTjeneste FOR JSON Path
+	FROM KundeHendelser AS K0 WHERE K0.HendelseTidspunkt >= @startDate AND K0.HendelseTidspunkt < @endDate GROUP BY CONVERT(date, K0.HendelseTidspunkt), IDTjeneste FOR JSON Path

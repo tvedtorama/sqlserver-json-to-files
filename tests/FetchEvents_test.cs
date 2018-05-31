@@ -15,14 +15,15 @@ namespace tests
                 }, 
                 file => $"SOME QUERY FROM {file}",
                 new System.DateTime(2018, 01, 22)).ToList();
-            Assert.Equal(3, items.Count);
+            Assert.Equal(6, items.Count);
             Assert.Equal(2, items[0].Params.Count);
             Assert.Equal(new System.DateTime(2018, 01, 15), items[0].Params[0].Value);
             Assert.Equal(new System.DateTime(2018, 01, 17), items[0].Params[1].Value);
             Assert.Equal("SOME QUERY FROM FetchUsageEvents.sql", items[0].Query);
             Assert.Equal("UsageEvents_2018-01-15.json", items[0].FilePath);
-            Assert.Equal(new System.DateTime(2018, 01, 19), items[2].Params[0].Value);
-            Assert.Equal(new System.DateTime(2018, 01, 21), items[2].Params[1].Value);
+            Assert.Equal("EmptyingEvents_2018-01-15.json", items[0].FilePath);
+            Assert.Equal(new System.DateTime(2018, 01, 19), items[5].Params[0].Value);
+            Assert.Equal(new System.DateTime(2018, 01, 21), items[5].Params[1].Value);
         }
 
     }

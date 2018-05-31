@@ -21,6 +21,7 @@ namespace JsonReader.Fetchers
 
 		public static IEnumerable<Job> ProduceEvents(FetchEventsConfig config, System.Func<string, string> loadFile, System.DateTime endDateInput) {
 			var fetchUsageEvents = loadFile("FetchUsageEvents.sql");
+			var fetchEmptyingEvents = loadFile("FetchEmptyingEvents.sql");
 
 			var (startDate, intervalHours) = (config.eventStartDate.Date, config.eventIntervalHours);
 
@@ -36,10 +37,13 @@ namespace JsonReader.Fetchers
 				}).SkipLast(1);
 			
 			foreach (var interval in intervals) {
-				yield return new Job {Query = fetchUsageEvents, FilePath = $"UsageEvents_{interval.startTime.ToString("yyyy-MM-dd")}.json", Params = new List<SqlParameter> {
+				var paramList = new List<SqlParameter> {
 						new SqlParameter("@startDate", System.Data.SqlDbType.Date) {Value = interval.startTime},
 						new SqlParameter("@endDate", System.Data.SqlDbType.Date) {Value = interval.endTime}
-					}};
+					};
+				var filenamePostfix = interval.startTime.ToString("yyyy-MM-dd");
+				yield return new Job {Query = fetchUsageEvents, FilePath = $"UsageEvents_{filenamePostfix}.json", Params = paramList};
+				yield return new Job {Query = fetchEmptyingEvents, FilePath = $"EmptyingEvents_{filenamePostfix}.json", Params = paramList};
 			}
 		}
 	}
