@@ -21,6 +21,7 @@ namespace JsonReader
             var conn = QueryExecuter.OpenConnection(connectionString);
             System.Func<string, string> readFile = f => System.IO.File.ReadAllText(f);
             var queries = new List<IEnumerable<Job>>{
+                    Fetchers.FetchIdentities.ProduceIdentities(readFile),
                     Fetchers.FetchCustomers.ProduceCustomers(readFile),
                     Fetchers.FetchEvents.ProduceEvents(fetcherConfig, readFile, DateTime.Now.Date),
                 }.SelectMany(x => x);
