@@ -16,6 +16,8 @@ SELECT
 CAST(Cust.IDKundeEnhet AS nvarchar(200)) AS "customerId",
 Cust.Navn as "name",
 '' as "parentId",
+CAST(Cust.IDKundeAktor AS nvarchar(200)) AS "operatorId",
+
 JSON_QUERY(CONCAT(
 	'{',
 		(SELECT CONCAT('"S', CONVERT(nvarchar, T.IDTjeneste), '.ServiceId": "',
