@@ -13,7 +13,7 @@ SELECT
 				CASE K.IDPunktEnhet WHEN 1 THEN 'G' WHEN 3 THEN 'KG' ELSE PE.Enhet END as "properties.weightUnit",
 				CASE IDFraksjon WHEN 1 THEN '0001' WHEN 2 THEN '9999' WHEN 3 THEN '1299' WHEN 6 THEN '1231' WHEN 7 THEN '1700' WHEN 8 THEN '1261' END as "properties.wasteCategory",
 				CASE WHEN B.IDBrikke IS NULL THEN Rfid ELSE B.UIDISO14443A END as identityId,
-				'RFID_ISO14443A' as identityType
+				'RFID_ISO' as identityType
 				FROM KundeHendelser K 
 					INNER JOIN PunktEnhet PE ON K.IDPunktEnhet = PE.IDPunktEnhet
 					LEFT OUTER JOIN Brikker B ON K.IDBrikke = B.IDBrikke
