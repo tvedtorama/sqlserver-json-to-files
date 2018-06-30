@@ -9,10 +9,9 @@ SELECT
 				CASE K.IDTommeHendelseType WHEN 1 THEN 'OUT' WHEN 10 THEN 'IN' ELSE 'EMPTY' END as type,
 				CASE WHEN TE.IDPunktBarn IS NULL THEN TE.TjenesteIDEnhet ELSE 'C' + CONVERT(nvarchar, TE.IDPunktBarn) END as pointRef,
 				'ID' as pointRefType,
-				'0' as value,
-				'' as Unit,
 				CASE WHEN K.IDTommeHendelseType = 1 THEN 'S' + CONVERT(nvarchar, TE.IDTjeneste) ELSE NULL END as identityId,
 				CASE WHEN K.IDTommeHendelseType = 1 THEN 'POINT_REF' ELSE NULL END as identityType
+				CASE IDFraksjon WHEN 1 THEN '0001' WHEN 2 THEN '9999' WHEN 3 THEN '1299' WHEN 6 THEN '1231' WHEN 7 THEN '1700' WHEN 8 THEN '1261' END as "properties.wasteCategory",
 				FROM TommeHendelser K 
 					LEFT OUTER JOIN TommeEnhet TE ON K.IDTommeEnhet = TE.IDTommeEnhet
 				-- Note: When the IDTjeneste condition was added, to fix duplicate events among services, the query slowed down considerably
