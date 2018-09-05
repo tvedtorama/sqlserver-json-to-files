@@ -20,7 +20,7 @@ CAST(Cust.IDKundeAktor AS nvarchar(200)) AS "operatorId",
 
 JSON_QUERY(CONCAT(
 	'{',
-		(SELECT CONCAT('"S', CONVERT(nvarchar, T.IDTjeneste), '.ServiceId": "',
+		(SELECT CONCAT('"S', CONVERT(nvarchar, T.IDTjeneste), '_ServiceId": "',
 			CASE WHEN T.I3&32 = 0 THEN KET.IDTjenesteKunde ELSE CONVERT(NVARCHAR(50), KET.GUIDTjenesteKunde) END, '",') AS [text()]
 		FROM KundeEnhetTjeneste KET INNER JOIN BossIDTjeneste T ON KET.IDTjeneste=T.IDTjeneste
 		WHERE KET.IDKundeEnhet=Cust.IDKundeEnhet
