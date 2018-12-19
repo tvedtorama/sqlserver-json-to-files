@@ -23,6 +23,8 @@ namespace JsonReader
             var queries = new List<IEnumerable<Job>>{
                     Fetchers.FetchIdentities.ProduceIdentities(readFile),
                     Fetchers.FetchCustomers.ProduceCustomers(readFile),
+                    // Fetchers.FetchContainers.ProduceContainers(readFile),
+                    Fetchers.FetchPoints.ProducePoints(readFile),
                     Fetchers.FetchEvents.ProduceEvents(fetcherConfig, readFile, DateTime.Now.Date),
                 }.SelectMany(x => x);
 
