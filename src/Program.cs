@@ -25,6 +25,7 @@ namespace JsonReader
                     Fetchers.FetchCustomers.ProduceCustomers(readFile),
                     // Fetchers.FetchContainers.ProduceContainers(readFile),
                     Fetchers.FetchPoints.ProducePoints(readFile),
+                    Fetchers.FetchAllocations.ProduceAllocations(readFile),
                     Fetchers.FetchEvents.ProduceEvents(fetcherConfig, readFile, DateTime.Now.Date),
                 }.SelectMany(x => x);
 

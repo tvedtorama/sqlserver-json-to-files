@@ -1,3 +1,4 @@
+/* Union terminal, points and point children into point hierarchy */
 WITH AccessPoint (Id, bossIdId, Guid, IDPunktType, IDFraksjon, IDPunktEgenskap, IDPunktKundeTyper, ServiceGuid, ServiceId, ServiceRef, ParentId, tag, name, description, geoLocation, status, oldCustomerFn) 
 	  AS (
 	     SELECT CAST(IDPunkt as nvarchar(200)) as ID, IDPunkt as bossIdId, GUIDPunkt as Guid, IDPunktType, IDFraksjon, IDPunktEgenskap, IDPunktKundeTyper, P.TjenesteGuidPunkt as ServiceGuid, P.TjenesteIdPunkt as ServiceId, P.TjenesteReferanse as ServiceRef, 'S' + CAST(IDTjeneste as nvarchar(200)) as ParentId, CASE WHEN P.Merkelapp = 'NA' THEN NULL ELSE P.Merkelapp END as tag, Navn as name, Beskrivelse as description, (SELECT p2.UtmSone as utmZone, p2.UtmX as utmX, p2.UtmY as utmY, p2.GPS as gps, p2.DesimalGrader as decimalDegrees FROM Punkt P2 WHERE P2.IDPunkt = P.IDPunkt FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER) AS geoLocation, 'Active' AS status, null AS oldCustomerFn FROM Punkt P
