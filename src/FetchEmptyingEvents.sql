@@ -12,9 +12,9 @@ SELECT
 				CASE WHEN K.IDTommeHendelseType = 1 THEN 'S' + CONVERT(nvarchar, TE.IDTjeneste) ELSE NULL END as identityId,
 				CASE WHEN K.IDTommeHendelseType = 1 THEN 'POINT_REF' ELSE NULL END as identityType,
 				CASE K.IDFraksjon WHEN 1 THEN '0001' WHEN 2 THEN '9999' WHEN 3 THEN '1299' WHEN 6 THEN '1231' WHEN 7 THEN '1700' WHEN 8 THEN '1261' END as "properties.fraction"
-				FROM TommeHendelser K 
-					LEFT OUTER JOIN TommeEnhet TE ON K.IDTommeEnhet = TE.IDTommeEnhet
+				FROM [BossID].[dbo].TommeHendelser K 
+					LEFT OUTER JOIN [BossID].[dbo].TommeEnhet TE ON K.IDTommeEnhet = TE.IDTommeEnhet
 				-- Note: When the IDTjeneste condition was added, to fix duplicate events among services, the query slowed down considerably
 				WHERE CONVERT(date, K.HendelseDato) = CONVERT(date, K0.HendelseDato) AND K.IDTjeneste = k0.IDTjeneste FOR JSON PATH)) AS "eventList"
 			FOR JSON PATH, WITHOUT_ARRAY_WRAPPER)) AS "payload"
-	FROM TommeHendelser AS K0 WHERE K0.HendelseDato >= @startDate AND K0.HendelseDato < @endDate GROUP BY CONVERT(date, K0.HendelseDato), IDTjeneste FOR JSON Path
+	FROM [BossID].[dbo].TommeHendelser AS K0 WHERE K0.HendelseDato >= @startDate AND K0.HendelseDato < @endDate GROUP BY CONVERT(date, K0.HendelseDato), IDTjeneste FOR JSON Path

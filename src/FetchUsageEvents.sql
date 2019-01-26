@@ -14,10 +14,10 @@ SELECT
 				CASE IDFraksjon WHEN 1 THEN '0001' WHEN 2 THEN '9999' WHEN 3 THEN '1299' WHEN 6 THEN '1231' WHEN 7 THEN '1700' WHEN 8 THEN '1261' END as "properties.wasteCategory",
 				CASE WHEN B.IDBrikke IS NULL THEN Rfid ELSE B.UIDISO14443A END as identityId,
 				'RFID_ISO' as identityType
-				FROM KundeHendelser K 
-					INNER JOIN PunktEnhet PE ON K.IDPunktEnhet = PE.IDPunktEnhet
-					LEFT OUTER JOIN Brikker B ON K.IDBrikke = B.IDBrikke
+				FROM [BossID].[dbo].KundeHendelser K 
+					INNER JOIN [BossID].[dbo].PunktEnhet PE ON K.IDPunktEnhet = PE.IDPunktEnhet
+					LEFT OUTER JOIN [BossID].[dbo].Brikker B ON K.IDBrikke = B.IDBrikke
 				-- Note: When the IDTjeneste condition was added, to fix duplicate events among services, the query slowed down considerably
 				WHERE CONVERT(date, K.HendelseTidspunkt) = CONVERT(date, K0.HendelseTidspunkt) AND K.IDTjeneste = k0.IDTjeneste FOR JSON PATH)) AS "eventList"
 			FOR JSON PATH, WITHOUT_ARRAY_WRAPPER)) AS "payload"
-	FROM KundeHendelser AS K0 WHERE K0.HendelseTidspunkt >= @startDate AND K0.HendelseTidspunkt < @endDate GROUP BY CONVERT(date, K0.HendelseTidspunkt), IDTjeneste FOR JSON Path
+	FROM [BossID].[dbo].KundeHendelser AS K0 WHERE K0.HendelseTidspunkt >= @startDate AND K0.HendelseTidspunkt < @endDate GROUP BY CONVERT(date, K0.HendelseTidspunkt), IDTjeneste FOR JSON Path
