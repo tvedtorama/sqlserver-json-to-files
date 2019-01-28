@@ -6,12 +6,12 @@ WITH Props (IDKundeEnhet, matrikkel, geoLocationCode, geoLocationName, descripti
 		AdresseGate AS "geoLocationCode",
 		Gateadresse AS "geoLocationName",
 		Beskrivelse AS "description"
-		FROM [BossID].[dbo].KundeEnhet Props WHERE IDKundeEnhetsType IN (0, 1, 2)
+		FROM [BossID].[dbo].KundeEnhet Props WHERE IDKundeEnhetsType IN (0, 1, 2) AND Slettet <> 1
 	UNION SELECT IDKundeEnhet, NULL AS "matrikkel",
 		NULL AS "geoLocationCode",
 		NULL AS "geoLocationName",
 		Beskrivelse AS "description"
-		FROM [BossID].[dbo].KundeEnhet Props WHERE IDKundeEnhetsType NOT IN (0, 1, 2) )
+		FROM [BossID].[dbo].KundeEnhet Props WHERE IDKundeEnhetsType NOT IN (0, 1, 2) ) AND Slettet <> 1
 SELECT
 CAST(Cust.IDKundeEnhet AS nvarchar(200)) AS "customerId",
 Cust.Navn as "name",
@@ -43,4 +43,5 @@ JSON_QUERY(
 			Cust.IDKundeEnhet = CustPoint.IDKundeEnhet ORDER BY IDPunktRolle FOR JSON PATH) points
 FROM [BossID].[dbo].KundeEnhet Cust
 INNER JOIN [BossID].[dbo].KundeEnhetsType CustType ON Cust.IDKundeEnhetsType = CustType.IDKundeEnhetsType
+WHERE Cust.Slettet <> 1
 FOR JSON PATH
