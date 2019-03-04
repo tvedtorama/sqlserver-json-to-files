@@ -1,16 +1,20 @@
-WITH Props (IDKundeEnhet, matrikkel, geoLocationCode, geoLocationName, description) AS (
+WITH Props (IDKundeEnhet, matrikkel, geoLocationCode, geoLocationName, description, hatchTypeCode) AS (
 	-- The reason for this WITH-block is to treat properties differently between customer types, could have been a CASE for each prop instead.  This little twist also led to issues with the JSON formatting below.
 	SELECT
 		IDKundeEnhet,
 		Matrikkel AS "matrikkel",
 		AdresseGate AS "geoLocationCode",
 		Gateadresse AS "geoLocationName",
-		Beskrivelse AS "description"
+		Beskrivelse AS "description",
+		NULL AS hatchTypeCode
 		FROM [BossID].[dbo].KundeEnhet Props WHERE IDKundeEnhetsType IN (0, 1, 2) AND Slettet <> 1
-	UNION SELECT IDKundeEnhet, NULL AS "matrikkel",
+	UNION SELECT 
+	    IDKundeEnhet,
+		NULL AS "matrikkel",
 		NULL AS "geoLocationCode",
 		NULL AS "geoLocationName",
-		Beskrivelse AS "description"
+		Beskrivelse AS "description",
+		CASE IDPunktEgenskap WHEN 2 THEN 'S' ELSE NULL END AS hatchTypeCode
 		FROM [BossID].[dbo].KundeEnhet Props WHERE IDKundeEnhetsType NOT IN (0, 1, 2) AND Slettet <> 1)
 SELECT
 CAST(Cust.IDKundeEnhet AS nvarchar(200)) AS "customerId",
@@ -29,7 +33,7 @@ JSON_QUERY(CONCAT(
 		'"PAAvtaleGUID": "', Cust.GUIDAvtale, '"',
 	'}')) AS "externalKeys",
 JSON_QUERY((
-	SELECT matrikkel, geoLocationCode, geoLocationName, description FROM Props WHERE Props.IDKundeEnhet = Cust.IDKundeEnhet
+	SELECT matrikkel, geoLocationCode, geoLocationName, description, hatchTypeCode FROM Props WHERE Props.IDKundeEnhet = Cust.IDKundeEnhet
 	FOR JSON PATH, WITHOUT_ARRAY_WRAPPER)) AS "properties",
 CustType.KortNavn AS "customerType",
 JSON_QUERY(
