@@ -12,7 +12,7 @@ WITH AccessPoint (Id, bossIdId, IsGeoLocation, Guid, IDPunktType, IDFraksjon, ID
 	  guid as 'externalKeys.guid',
 	  ServiceGuid as 'externalKeys.serviceGuid',
 	  ServiceId as 'externalKeys.serviceId',
-	  bossIdId as 'externalKeys.bossId',
+	  CAST(bossIdId as nvarchar(200)) as 'externalKeys.bossId',
 	  tag as 'externalKeys.printedTag',
 	  CASE WHEN FT.IDFraksjon >= 1 THEN FT.FraksjonID ELSE NULL END AS 'properties.fraction',
 	  CASE WHEN FT.IDFraksjon >= 1 THEN FT.Navn ELSE NULL END AS 'properties.fractionDesc',
