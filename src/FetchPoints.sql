@@ -24,12 +24,21 @@ WITH AccessPoint (Id, bossIdId, IsGeoLocation, Guid, IDPunktType, IDFraksjon, ID
 	  BS.ServiceBinding AS 'properties.serviceBinding',
 	  BT.navn AS 'properties.RFIDReadFormat', 
 	  oldCustomerFn AS 'properties.oldCustomerFn',
+	  CASE WHEN PG.IDPunktPR IS NOT NULL THEN
+	  	-- Create a comma separated list of values, allowing the second point to be optional (as if it ever is) (Stuff just removes the first comma)
+		(SELECT STUFF((SELECT ',' + CONVERT(nvarchar(200), P) FROM (
+			SELECT PG.IDPunktS1 AS P
+			UNION 
+			SELECT PG2.IDPunktS2 AS P FROM PunktGrupper PG2 WHERE PG2.IDPunktPR = PG.IDPunktPR AND PG2.IDPunktS2 IS NOT NULL) AS X
+		 FOR XML PATH('')), 1, 1, '')
+	  ) ELSE NULL END AS 'properties.redundancyPoints',
 	  JSON_QUERY(CASE WHEN IsGeoLocation = 1 THEN (SELECT p2.UtmSone as utmZone, p2.UtmX as utmX, p2.UtmY as utmY, p2.GPS as gps, p2.DesimalGrader as decimalDegrees FROM [BossID].[dbo].Punkt P2 WHERE P2.IDPunkt = bossIdId FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER) ELSE NULL END) AS geoLocation,
 	  status as 'status'
 	  FROM AccessPoint AP
 	  INNER JOIN [BossID].[dbo].FraksjonsType FT ON ft.IDFraksjon = AP.IDFraksjon
 	  INNER JOIN [BossID].[dbo].PunktEgenskap PE ON PE.IDPunktEgenskap = AP.IDPunktEgenskap
 	  LEFT OUTER JOIN [BossID].[dbo].PunktType PT ON pt.IDPunktType = AP.IDPunktType -- Note: "terminal" = hardcoded to 10 above
+	  LEFT OUTER JOIN [BossID].[dbo].PunktGrupper PG ON PG.IDPunktPR = AP.bossIdId AND PT.KortNavn = 'NEDPUNKT'
 	  LEFT OUTER JOIN [BossID].[dbo].BossIDTjeneste BS ON BS.IDTjeneste = AP.bossIdId AND AP.IDPunktType = 10
 	  LEFT OUTER JOIN [BossID].[dbo].BrikkeTyper BT ON BT.IDBrikkeType = BS.IDBrikkeType AND AP.IDPunktType = 10
 	  LEFT OUTER JOIN [BossID].[dbo].PunktKundeType PKT ON PKT.IDPunktKundeTyper=AP.IDPunktKundeTyper
