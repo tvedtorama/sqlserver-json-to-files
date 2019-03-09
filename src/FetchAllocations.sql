@@ -6,8 +6,8 @@ SELECT CAST(MAX(TMG.IDMatrikkelGate) as nvarchar(200)) allocationTemplateId,
 			TMG.IDMatrikkelGate = OtherTMG.IDMatrikkelGate ORDER BY IDPunktRolle FOR JSON PATH) points,
 	MAX(TMG.TilordneHusholdning) as "properties.assignHousehold",
 	MAX(TMG.TilordneBedrift) as "properties.assignBusiness",
-	MAX(MG.AdresseGate) as "externalKeys.geoLocationCode",
 	MAX(MG.Gateadresse) as "properties.geoLocationName",
+	MAX(MG.AdresseGate) as "externalKeys.geoLocationCode",
 	MAX(TMG.IDMatrikkelGate) as "externalKeys.bossId"
 	FROM [BossID].[dbo].TilordningMatrikkelGate TMG
 	INNER JOIN [BossID].[dbo].MatrikkelGate MG ON TMG.IDMatrikkelGate = MG.IDMatrikkelGate
