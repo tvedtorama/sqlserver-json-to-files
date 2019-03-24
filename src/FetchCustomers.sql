@@ -12,7 +12,7 @@ WITH Props (IDKundeEnhet, geoLocationCode, geoLocationName, description, hatchTy
 		NULL AS "geoLocationCode",
 		NULL AS "geoLocationName",
 		Beskrivelse AS "description",
-		CASE IDPunktEgenskap WHEN 2 THEN 'S' ELSE NULL END AS hatchTypeCode
+		CASE IDPunktEgenskap WHEN 2 THEN 'L' ELSE NULL END AS hatchTypeCode -- L ("liten")
 		FROM [BossID].[dbo].KundeEnhet Props WHERE IDKundeEnhetsType NOT IN (0, 1, 2) AND Slettet <> 1)
 SELECT
 CAST(Cust.IDKundeEnhet AS nvarchar(200)) AS "customerId",
