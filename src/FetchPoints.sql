@@ -25,7 +25,7 @@ WITH AccessPoint (Id, bossIdId, IsGeoLocation, Guid, IDPunktType, IDFraksjon, ID
 	  BT.navn AS 'properties.RFIDReadFormat', 
 	  oldCustomerFn AS 'properties.oldCustomerFn',
 	  CASE WHEN PG.IDPunktPR IS NOT NULL THEN
-	  	-- Create a comma separated list of values, allowing the second point to be optional (as if it ever is) (Stuff just removes the first comma)
+	  	-- Create a comma separated list of values, allowing the second point to be optional (as if it ever is) (Stuff just removes the first comma) (See AllocationApi/AllocationSystemProperties.ts)
 		(SELECT STUFF((SELECT ',' + CONVERT(nvarchar(200), P) FROM (
 			SELECT PG.IDPunktS1 AS P
 			UNION 
