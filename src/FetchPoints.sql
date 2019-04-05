@@ -29,7 +29,7 @@ WITH AccessPoint (Id, bossIdId, IsGeoLocation, Guid, IDPunktType, IDFraksjon, ID
 		(SELECT STUFF((SELECT ',' + CONVERT(nvarchar(200), P) FROM (
 			SELECT PG.IDPunktS1 AS P
 			UNION 
-			SELECT PG2.IDPunktS2 AS P FROM PunktGrupper PG2 WHERE PG2.IDPunktPR = PG.IDPunktPR AND PG2.IDPunktS2 IS NOT NULL) AS X
+			SELECT PG2.IDPunktS2 AS P FROM [BossID].[dbo].PunktGrupper PG2 WHERE PG2.IDPunktPR = PG.IDPunktPR AND PG2.IDPunktS2 IS NOT NULL) AS X
 		 FOR XML PATH('')), 1, 1, '')
 	  ) ELSE NULL END AS 'properties.redundancyPoints',
 	  JSON_QUERY(CASE WHEN IsGeoLocation = 1 THEN (SELECT p2.UtmSone as utmZone, p2.UtmX as utmX, p2.UtmY as utmY, p2.GPS as gps, p2.DesimalGrader as decimalDegrees FROM [BossID].[dbo].Punkt P2 WHERE P2.IDPunkt = bossIdId FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER) ELSE NULL END) AS geoLocation,
