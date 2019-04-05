@@ -7,7 +7,9 @@ WITH AccessPoint (Id, bossIdId, IsGeoLocation, Guid, IDPunktType, IDFraksjon, ID
 		 UNION
 		 SELECT 'S' + CAST(IDTjeneste as nvarchar(200)) as ID, IDTjeneste as bossIdId, 0 as IsGeoLocation, GUIDTjeneste as Guid, 10 as IDPunktType, 1 as IDFraksjon, 0 as IDPunktEgenskap, 0 as IDPunktKundeTyper, null as ServiceGuid, null as ServiceId, '' as ServiceRef, '' as ParentID, NULL as tag, Navn as Name, Beskrivelse as description, CASE WHEN ServiceStatus = 1 THEN 'Active' ELSE 'Inactive' END AS status, CASE WHEN I3&128 = 0 THEN 1 ELSE 0 END AS oldCustomerFn FROM [BossID].[dbo].BossIDTjeneste WHERE Slettet <> 1
 	  )
-	  SELECT id as accessPointId, parentId as parentId, name, description,
+	  SELECT id as accessPointId, 
+	  parentId,
+	  name, description,
 	  CASE WHEN PT.KortNavn = 'NEDPUNKT' THEN 'ACCESS_PARENT' WHEN PT.KortNavn = 'NEDKAST' THEN 'ACCESS_POINT' WHEN PT.KortNavn = 'GRUPPE' THEN 'GROUP' ELSE 'TERMINAL' END as type,
 	  guid as 'externalKeys.guid',
 	  ServiceGuid as 'externalKeys.serviceGuid',
@@ -16,7 +18,7 @@ WITH AccessPoint (Id, bossIdId, IsGeoLocation, Guid, IDPunktType, IDFraksjon, ID
 	  tag as 'externalKeys.printedTag',
 	  CASE WHEN FT.IDFraksjon >= 1 THEN FT.FraksjonID ELSE NULL END AS 'properties.fraction',
 	  CASE WHEN FT.IDFraksjon >= 1 THEN FT.Navn ELSE NULL END AS 'properties.fractionDesc',
-	  PE.KortNavn AS 'properties.hatchTypeCode',
+	  CASE WHEN (SELECT COUNT(*) FROM [BossID].[dbo].Punkt PP WHERE CONVERT(nvarchar(200), PP.IDPunkt) = parentId AND PT.KortNavn = 'GRUPPE' AND PP.IDPunktEgenskap IN (4, 104)) > 0 THEN 'T' ELSE PE.KortNavn END AS 'properties.hatchTypeCode',
 	  PKT.KortNavn AS 'properties.customerType',
 	  BS.APINokkel AS 'properties.apiKey',
 	  BS.ServiceURL AS 'properties.serviceUrl',
