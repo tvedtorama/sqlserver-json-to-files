@@ -44,5 +44,6 @@ WITH AccessPoint (Id, bossIdId, IsGeoLocation, Guid, IDPunktType, IDFraksjon, ID
 	  LEFT OUTER JOIN [BossID].[dbo].BossIDTjeneste BS ON BS.IDTjeneste = AP.bossIdId AND AP.IDPunktType = 10
 	  LEFT OUTER JOIN [BossID].[dbo].BrikkeTyper BT ON BT.IDBrikkeType = BS.IDBrikkeType AND AP.IDPunktType = 10
 	  LEFT OUTER JOIN [BossID].[dbo].PunktKundeType PKT ON PKT.IDPunktKundeTyper=AP.IDPunktKundeTyper
+	  ORDER BY AP.id ASC
       -- WHERE ParentId = '28' OR Id = '28' 
 	  FOR JSON PATH
