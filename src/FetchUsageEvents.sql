@@ -28,6 +28,6 @@ SELECT
 			FOR JSON PATH, WITHOUT_ARRAY_WRAPPER)) AS "payload"
 	FROM [BossID].[dbo].KundeHendelser AS K0
 	WHERE K0.HendelseTidspunkt >= @startDate AND K0.HendelseTidspunkt < @endDate 
-	--    AND IDTjeneste = @IDTjeneste
+	   AND IDTjeneste NOT IN (1, 2) -- AND IDTjeneste = @IDTjeneste
 	GROUP BY CONVERT(date, K0.HendelseTidspunkt), IDTjeneste
 	FOR JSON Path
