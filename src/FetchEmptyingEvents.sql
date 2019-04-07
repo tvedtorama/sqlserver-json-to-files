@@ -6,7 +6,9 @@ SELECT
 		'EVENT' as scenarioId,
 		JSON_QUERY((SELECT
 			CONVERT(date, k0.HendelseDato) as "theDay",
-			CONVERT(nvarchar, IDTjeneste) as "serviceClass",
+			CONCAT((SELECT Navn FROM [BossID].[dbo].BossIDTjeneste B WHERE B.IdTjeneste = K0.idtjeneste) , '_EMPTY_', CONVERT(nvarchar, IDTjeneste)) as "serviceClass",
+			CONVERT(bigint, DATEDIFF(second,{d '1970-01-01'},@startDate)) * 1000 as dataWindowStart,
+			CONVERT(bigint, DATEDIFF(second,{d '1970-01-01'},@endDate)) * 1000 as dataWindowEnd,
 			JSON_QUERY((SELECT HendelseDato as timestamp,
 				'ACCEPTED' as result,
 				CASE K.IDTommeHendelseType WHEN 1 THEN 'OUT' WHEN 10 THEN 'IN' ELSE 'EMPTY' END as type,
