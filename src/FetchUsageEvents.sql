@@ -1,16 +1,25 @@
--- declare @startDate DateTime = '2019-04-03 00:00:00.000'
--- declare @endDate DateTime = '2019-04-04 00:00:00.000'
--- declare @IDTjeneste int = 8
+-- declare @startDate DateTime = '2019-03-15 22:00:00.000'
+-- declare @endDate DateTime = '2019-03-18 22:00:00.000' -- note the rounding below...
+-- declare @IDTjeneste int = 1
 
+declare @timeZoneHack int = 1;
+
+WITH D(dayDiff, IDTjeneste) AS (
+	SELECT DATEDIFF(hour, @startDate, DATEadd(hour, @timeZoneHack, HendelseTidspunkt)) / 24, IDTjeneste FROM [BossID].[dbo].KundeHendelser AS K0
+		WHERE DATEadd(hour, @timeZoneHack, HendelseTidspunkt) BETWEEN @startDate AND @endDate
+		GROUP BY DATEDIFF(hour, @startDate, DATEadd(hour, @timeZoneHack, HendelseTidspunkt)) / 24, IDTjeneste
+), Y(startDate, endDate, IDTjeneste) AS (
+	SELECT DATEADD(day, D.dayDiff, @startDate), DATEADD(day, D.dayDiff + 1, @startDate), IDTjeneste FROM D
+)
 SELECT
 		'IMPORT_EVENT_BLOCK' as type,
 		'EVENT' as scenarioId,
 		JSON_QUERY((SELECT
-			CONVERT(date, k0.HendelseTidspunkt) as "theDay",
 			CONCAT((SELECT Navn FROM [BossID].[dbo].BossIDTjeneste B WHERE B.IdTjeneste = K0.idtjeneste) , '_', CONVERT(nvarchar, IDTjeneste)) as "serviceClass",
-			CONVERT(bigint, DATEDIFF(second,{d '1970-01-01'},@startDate)) * 1000 as dataWindowStart,
-			CONVERT(bigint, DATEDIFF(second,{d '1970-01-01'},@endDate)) * 1000 as dataWindowEnd,
-			JSON_QUERY((SELECT HendelseTidspunkt as timestamp,
+			CONVERT(bigint, DATEDIFF(second,{d '1970-01-01'}, K0.startDate)) * 1000 as dataWindowStart,
+			CONVERT(bigint, DATEDIFF(second,{d '1970-01-01'}, DATEADD(millisecond, -1, K0.endDate))) * 1000 as dataWindowEnd,
+			JSON_QUERY((SELECT
+				DATEadd(hour, @timeZoneHack, HendelseTidspunkt) timestamp,
 				CASE K.IDHendelseType WHEN 1 THEN 'ACCEPTED' ELSE 'REJECTED' END as result,
 				'USE' as type,
 				'C' + CONVERT(nvarchar, K.IDPunktBarn) as pointRef,
@@ -24,10 +33,9 @@ SELECT
 					INNER JOIN [BossID].[dbo].PunktEnhet PE ON K.IDPunktEnhet = PE.IDPunktEnhet
 					LEFT OUTER JOIN [BossID].[dbo].Brikker B ON K.IDBrikke = B.IDBrikke
 				-- Note: When the IDTjeneste condition was added, to fix duplicate events among services, the query slowed down considerably
-				WHERE CONVERT(date, K.HendelseTidspunkt) = CONVERT(date, K0.HendelseTidspunkt) AND K.IDTjeneste = k0.IDTjeneste FOR JSON PATH)) AS "eventList"
+				WHERE (DATEadd(hour, @timeZoneHack, HendelseTidspunkt) BETWEEN K0.startDate AND K0.endDate) AND K.IDTjeneste = k0.IDTjeneste
+				ORDER BY k.HendelseTidspunkt ASC
+				FOR JSON PATH)) AS "eventList"
 			FOR JSON PATH, WITHOUT_ARRAY_WRAPPER)) AS "payload"
-	FROM [BossID].[dbo].KundeHendelser AS K0
-	WHERE K0.HendelseTidspunkt >= @startDate AND K0.HendelseTidspunkt < @endDate 
-	   AND IDTjeneste NOT IN (1, 2) -- AND IDTjeneste = @IDTjeneste
-	GROUP BY CONVERT(date, K0.HendelseTidspunkt), IDTjeneste
+	FROM Y AS K0 ORDER BY K0.startDate
 	FOR JSON Path
