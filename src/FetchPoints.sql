@@ -31,7 +31,7 @@ WITH AccessPoint (Id, bossIdId, IsGeoLocation, Guid, IDPunktType, IDFraksjon, ID
 		(SELECT * FROM (
 			SELECT CONVERT(nvarchar(250), PG.IDPunktS1) AS id, 2 as priority
 			UNION 
-			SELECT  CONVERT(nvarchar(250), PG2.IDPunktS2) AS id, 3 as priority FROM [BIR408].[BossID].[dbo].PunktGrupper PG2 WHERE PG2.IDPunktPR = PG.IDPunktPR AND PG2.IDPunktS2 IS NOT NULL
+			SELECT  CONVERT(nvarchar(250), PG2.IDPunktS2) AS id, 3 as priority FROM [BossID].[dbo].PunktGrupper PG2 WHERE PG2.IDPunktPR = PG.IDPunktPR AND PG2.IDPunktS2 IS NOT NULL
 			) AS X
 		 FOR JSON AUTO
 	  ) ELSE NULL END AS 'properties.redundancyPoints',
