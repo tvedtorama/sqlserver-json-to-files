@@ -27,12 +27,13 @@ WITH AccessPoint (Id, bossIdId, IsGeoLocation, Guid, IDPunktType, IDFraksjon, ID
 	  BT.navn AS 'properties.RFIDReadFormat', 
 	  oldCustomerFn AS 'properties.oldCustomerFn',
 	  CASE WHEN PG.IDPunktPR IS NOT NULL THEN
-	  	-- Create a comma separated list of values, allowing the second point to be optional (as if it ever is) (Stuff just removes the first comma) (See AllocationApi/AllocationSystemProperties.ts)
-		(SELECT STUFF((SELECT ',' + CONVERT(nvarchar(200), P) FROM (
-			SELECT PG.IDPunktS1 AS P
+	  	-- Create a JSON-encoded list of values, allowing the second point to be optional (as if it ever is) (See AllocationApi/AllocationSystemProperties.ts)
+		(SELECT * FROM (
+			SELECT CONVERT(nvarchar(250), PG.IDPunktS1) AS id, 1 as priority
 			UNION 
-			SELECT PG2.IDPunktS2 AS P FROM [BossID].[dbo].PunktGrupper PG2 WHERE PG2.IDPunktPR = PG.IDPunktPR AND PG2.IDPunktS2 IS NOT NULL) AS X
-		 FOR XML PATH('')), 1, 1, '')
+			SELECT  CONVERT(nvarchar(250), PG2.IDPunktS2) AS id, 2 as priority FROM [BIR408].[BossID].[dbo].PunktGrupper PG2 WHERE PG2.IDPunktPR = PG.IDPunktPR AND PG2.IDPunktS2 IS NOT NULL
+			) AS X
+		 FOR JSON AUTO
 	  ) ELSE NULL END AS 'properties.redundancyPoints',
 	  JSON_QUERY(CASE WHEN IsGeoLocation = 1 THEN (SELECT p2.UtmSone as utmZone, p2.UtmX as utmX, p2.UtmY as utmY, p2.GPS as gps, p2.DesimalGrader as decimalDegrees FROM [BossID].[dbo].Punkt P2 WHERE P2.IDPunkt = bossIdId FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER) ELSE NULL END) AS geoLocation,
 	  status as 'status'
