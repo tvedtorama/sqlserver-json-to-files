@@ -38,8 +38,8 @@ namespace JsonReader.Fetchers
 			
 			foreach (var interval in intervals) {
 				System.Func<IList<SqlParameter>> paramList = () => new List<SqlParameter> {
-						new SqlParameter("@startDate", System.Data.SqlDbType.Date) {Value = interval.startTime},
-						new SqlParameter("@endDate", System.Data.SqlDbType.Date) {Value = interval.endTime}
+						new SqlParameter("@startDate", System.Data.SqlDbType.DateTime) {Value = interval.startTime},
+						new SqlParameter("@endDate", System.Data.SqlDbType.DateTime) {Value = interval.endTime}
 					};
 				var filenamePostfix = interval.startTime.ToString("yyyy-MM-dd");
 				yield return new Job {Query = fetchUsageEvents, FilePath = $"UsageEvents_{filenamePostfix}.json", Params = paramList()};

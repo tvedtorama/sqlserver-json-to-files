@@ -21,16 +21,14 @@ namespace JsonReader
                 cmd.Parameters.Add(p);
 			var jsonResult = new StringBuilder();
 			var reader = cmd.ExecuteReader();
-			if (!reader.HasRows)
-			{
-				jsonResult.Append("[]");
-			}
-			else
-			{
+ 			try {
 				while (reader.Read())
 				{
 					jsonResult.Append(reader.GetValue(0).ToString());
 				}
+			} catch (System.Data.SqlClient.SqlException err) {
+				System.Diagnostics.Trace.TraceError(err.Message);
+				jsonResult.Append("[]"); 
 			}
             return jsonResult.ToString();
 		}
